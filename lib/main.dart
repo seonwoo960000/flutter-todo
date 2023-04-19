@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/ui/screens/home/main_screen.dart';
+import 'package:todo/ui/screens/home/calendar_screen.dart';
 import 'package:todo/ui/theme/colors.dart';
 
 void main() {
@@ -20,7 +20,7 @@ class TodoApp extends StatelessWidget {
         primarySwatch: todoPrimaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const MainScreen(title: 'TodoGPT')
+      home: const CalendarScreen()
     );
   }
 }
