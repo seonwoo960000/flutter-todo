@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -26,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("mytodos"),
+        title: const Text("Todo"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -34,24 +36,37 @@ class _MainScreenState extends State<MainScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                    title: Text("Add Todolist"),
-                    content: TextField(
-                      onChanged: (String value) {
-                        input = value;
-                      },
+                    actionsPadding: EdgeInsets.all(16.0),
+                    title: const Center(child: Text('Add Todo')),
+                    content: SizedBox(
+                      width: min(MediaQuery.of(context).size.width * 0.6, 720),
+                      child: TextField(
+                          onChanged: (String value) {
+                            input = value;
+                          },
+                          autofocus: true,
+                          onSubmitted: (_) {
+                            FocusScope.of(context)
+                                .unfocus(); // Remove focus from TextField
+                            setState(() {
+                              todos.add(input);
+                            });
+                            Navigator.pop(context); // Close the AlertDialog
+                          }),
                     ),
                     actions: <Widget>[
-                      FloatingActionButton(onPressed: (){
-                        setState(() {
-                          todos.add(input);
-                        });
-                      },
-                          child: Text("Add"))
-                    ]
-                );
+                      FloatingActionButton(
+                          onPressed: () {
+                            setState(() {
+                              todos.add(input);
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Add"))
+                    ]);
               });
         },
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
@@ -59,10 +74,17 @@ class _MainScreenState extends State<MainScreen> {
       body: ListView.builder(
           itemCount: todos.length,
           itemBuilder: (BuildContext context, int index) {
-            return Dismissible(key: Key(todos[index]), child: Card(
-                child: ListTile(title: Text(todos[index]),
-                )
-            ));
+            return Dismissible(
+                key: Key(todos[index]),
+                onDismissed: (direction) {
+                  setState(() {
+                    todos.removeAt(index);
+                  });
+                },
+                child: Card(
+                    child: ListTile(
+                  title: Text(todos[index]),
+                )));
           }),
     );
   }
